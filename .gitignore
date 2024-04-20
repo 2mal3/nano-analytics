@@ -1,0 +1,9 @@
+# editor files
+.vscode/
+
+# secret files
+.env
+
+# generated files
+*_templ.txt
+nano-analytics*

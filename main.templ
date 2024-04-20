@@ -1,0 +1,148 @@
+package main
+
+import (
+	"fmt"
+)
+
+templ statsOverviewTempl(hits []Hit) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			@defaultHead()
+			<title>Analytics / Tracked Paths</title>
+		</head>
+		<body>
+			<header class="container">
+				<h1 style="margin-top: 3rem">Analytics / Tracked Paths</h1>
+			</header>
+			<main class="container">
+				<article>
+					<ul>
+						for _, hit := range hits {
+							<li><h5><a href={ templ.URL(fmt.Sprintf("/stats/%s", hit.Path)) }>{ hit.Path }</a></h5></li>
+						}
+					</ul>
+				</article>
+			</main>
+			@footerTempl()
+		</body>
+	</html>
+}
+
+script lineGraph(stats []stat, canvasId string) {
+	const ctx = document.getElementById(canvasId);
+
+	new Chart(ctx, {
+		type: "line",
+		options: {
+			// aspectRatio: 4,
+			plugins: {
+				legend: {
+					display: false,
+				}
+			}
+		},
+		data: {
+			labels: stats.map(stat => stat.Name),
+			datasets: [{
+				label: "Users",
+				data: stats.map(stat => stat.Count),
+				borderWidth: 2,
+				tension: 0.5
+			}],
+		}
+	})
+}
+
+script barGraph(stats []stat, canvasId string) {
+	const ctx = document.getElementById(canvasId);
+
+	new Chart(ctx, {
+		type: "bar",
+		options: {
+			indexAxis: "y",
+			aspectRatio: 4,
+			scales: {
+				y: {
+					beginAtZero: true,
+				}
+			},
+			plugins: {
+				legend: {
+					display: false,
+				}
+			}
+		},
+		data: {
+			labels: stats.map(stat => stat.Name),
+			datasets: [{
+				label: "Users",
+				data: stats.map(stat => stat.Count),
+				borderWidth: 1,
+			}],
+		}
+	})
+}
+
+
+templ statsTempl(path string, views []stat, actions []stat, countries []stat, browsers []stat, devices []stat) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			@defaultHead()
+		</head>
+		<body>
+			<header class="container">
+				<h1 style="margin-top: 3rem">Analytics / { path }</h1>
+			</header>
+			<main class="container">
+				<article>
+					<h2>Views</h2>
+					<canvas id="views"></canvas>
+					@lineGraph(views, "views")
+				</article>
+				<div class="grid">
+					<article>
+						<h2>Actions</h2>
+						<canvas id="actions"></canvas>
+						@barGraph(actions, "actions")
+					</article>
+					<article>
+						<h2>Countries</h2>
+						<canvas id="countries"></canvas>
+						@barGraph(countries, "countries")
+					</article>
+				</div>
+				<div class="grid">
+					<article>
+						<h2>Browsers</h2>
+						<canvas id="browsers"></canvas>
+						@barGraph(browsers, "browsers")
+					</article>
+					<article>
+						<h2>Devices</h2>
+						<canvas id="devices"></canvas>
+						@barGraph(devices, "devices")
+					</article>
+				</div>
+			</main>
+			@footerTempl()
+		</body>
+	</html>
+}
+
+templ footerTempl() {
+	<footer class="container">
+		<small>by 2mal3</small>
+	</footer>
+}
+
+templ defaultHead() {
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<link
+		rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+	/>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+}
