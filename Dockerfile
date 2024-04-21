@@ -16,8 +16,14 @@ FROM alpine:3.19 AS run
 
 WORKDIR /app
 
-COPY *.mmdb ./
+RUN addgroup nonroot && \
+    adduser --system -G nonroot --disabled-password nonroot && \
+    apk add --no-cache gosu --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing/
+
+COPY *.mmdb docker-entrypoint.sh ./
+RUN chmod +x docker-entrypoint.sh
 COPY --from=build /app/nano-analytics .
 
+VOLUME /app/database/
 EXPOSE 1323
-ENTRYPOINT [ "./nano-analytics" ]
+ENTRYPOINT ./docker-entrypoint.sh
