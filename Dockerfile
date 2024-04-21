@@ -2,7 +2,7 @@ FROM golang:1.21-alpine AS build
 
 WORKDIR /app
 
-RUN go install github.com/a-h/templ/cmd/templ@latest
+RUN go install github.com/a-h/templ/cmd/templ@v0.2.648
 
 COPY go.mod go.sum ./
 RUN go mod download
