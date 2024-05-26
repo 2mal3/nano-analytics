@@ -131,8 +131,10 @@ func track(ctx echo.Context) error {
 		return ctx.NoContent(http.StatusOK)
 	}
 
+	today := time.Now().Format("2006-01-02")
+
 	ip := ctx.RealIP()
-	ipHash := md5.Sum([]byte(ip))
+	ipHash := md5.Sum([]byte(ip + today))
 	ipHashString := hex.EncodeToString(ipHash[:])
 
 	geoResponse, err := geolite.Country(net.ParseIP(ip))
@@ -144,8 +146,6 @@ func track(ctx echo.Context) error {
 	path := ctx.Param("path")
 
 	action := ctx.QueryParam("action")
-
-	today := time.Now().Format("2006-01-02")
 
 	// TODO: get country from IP
 	hit := Hit{
