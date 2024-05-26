@@ -49,14 +49,12 @@ func main() {
 	adminPassword = os.Getenv("ADMIN_PASSWORD")
 	if adminPassword == "" {
 		adminPassword = "admin"
-		// fmt.Println("ADMIN_PASSWORD not set")
-		// os.Exit(1)
+		fmt.Println("ADMIN_PASSWORD not set")
+		os.Exit(1)
 	}
 	adminUsername = os.Getenv("ADMIN_USERNAME")
 	if adminUsername == "" {
 		adminUsername = "admin"
-		// fmt.Println("ADMIN_USERNAME not set")
-		// os.Exit(1)
 	}
 
 	// Connect to the sql database
