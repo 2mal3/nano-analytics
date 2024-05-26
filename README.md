@@ -2,7 +2,8 @@
 
 An extremely lightweight and privacy-preserving analytics platform for self-hosting. It's easy to set up and integrate into your services to anonymously track device, browser, country, date, and your own custom user actions. The statistics are then easily accessible through a web UI.
 The main idea of this application is based on [this](https://herman.bearblog.dev/how-bear-does-analytics-with-css/) very interesting article from Herman's blog.
-The statistics can be viewed at the `<server address>/stats` path with the correct credentials.
+
+The statistics can be viewed at the `http://<server address>/stats` url with the correct credentials.
 
 ## Setup The Server
 
