@@ -189,11 +189,11 @@ func statsRoute(ctx echo.Context) error {
 	var actions []stat
 	db.Raw("SELECT action AS name, COUNT(*) AS count FROM hits WHERE path = ? GROUP BY action HAVING date >= ?", path, monthBefore).Scan(&actions)
 	var countries []stat
-	db.Raw("SELECT country AS name, COUNT(*) AS count FROM hits WHERE path = ? GROUP BY country HAVING date >= ?", path, monthBefore).Scan(&countries)
+	db.Raw("SELECT country AS name, COUNT(*) AS count FROM hits WHERE path = ? AND date >= ? GROUP BY country", path, monthBefore).Scan(&countries)
 	var browsers []stat
-	db.Raw("SELECT browser AS name, COUNT(*) AS count FROM hits WHERE path = ? GROUP BY browser HAVING date >= ?", path, monthBefore).Scan(&browsers)
+	db.Raw("SELECT browser AS name, COUNT(*) AS count FROM hits WHERE path = ? AND date >= ? GROUP BY browser", path, monthBefore).Scan(&browsers)
 	var devices []stat
-	db.Raw("SELECT device AS name, COUNT(*) AS count FROM hits WHERE path = ? GROUP BY device HAVING date >= ?", path, monthBefore).Scan(&devices)
+	db.Raw("SELECT device AS name, COUNT(*) AS count FROM hits WHERE path = ? AND date >= ? GROUP BY device", path, monthBefore).Scan(&devices)
 
 	return statsTempl(path, views, actions, countries, browsers, devices).Render(ctx.Request().Context(), ctx.Response().Writer)
 }
