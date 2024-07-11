@@ -1,8 +1,6 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 templ statsOverviewTempl(hits []Hit) {
 	<!DOCTYPE html>
@@ -84,12 +82,12 @@ script barGraph(stats []stat, canvasId string) {
 	})
 }
 
-
 templ statsTempl(path string, views []stat, actions []stat, countries []stat, browsers []stat, devices []stat) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			@defaultHead()
+			<title>Analytics / { path }</title>
 		</head>
 		<body>
 			<header class="container">
