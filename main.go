@@ -140,6 +140,7 @@ func track(ctx echo.Context) error {
 	geoResponse, err := geolite.Country(net.ParseIP(ip))
 	if err != nil {
 		ctx.Logger().Error(err)
+		return ctx.NoContent(http.StatusOK)
 	}
 	countryName := geoResponse.Country.Names["en"]
 
@@ -147,7 +148,6 @@ func track(ctx echo.Context) error {
 
 	action := ctx.QueryParam("action")
 
-	// TODO: get country from IP
 	hit := Hit{
 		Ip:      ipHashString,
 		Path:    path,
@@ -159,6 +159,7 @@ func track(ctx echo.Context) error {
 	}
 	if result := db.Create(&hit); result.Error != nil && !errors.Is(result.Error, gorm.ErrDuplicatedKey) {
 		ctx.Logger().Error(result.Error)
+		return ctx.NoContent(http.StatusOK)
 	}
 
 	return ctx.NoContent(http.StatusOK)
