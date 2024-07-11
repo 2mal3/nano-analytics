@@ -82,7 +82,7 @@ script barGraph(stats []stat, canvasId string) {
 	})
 }
 
-templ statsTempl(path string, views []stat, actions []stat, countries []stat, browsers []stat, devices []stat) {
+templ statsTempl(path string, views []stat, actions []stat, countries []stat, browsers []stat, devices []stat, referrers []stat) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -123,6 +123,11 @@ templ statsTempl(path string, views []stat, actions []stat, countries []stat, br
 						@barGraph(devices, "devices")
 					</article>
 				</div>
+				<article>
+					<h2>Referrers</h2>
+					<canvas id="referrers"></canvas>
+					@barGraph(referrers, "referrers")
+				</article>
 			</main>
 			@footerTempl()
 		</body>

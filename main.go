@@ -8,7 +8,9 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/glebarez/sqlite"
@@ -23,13 +25,14 @@ import (
 )
 
 type Hit struct {
-	Ip      string `gorm:"primaryKey"`
-	Path    string `gorm:"primaryKey"`
-	Action  string `gorm:"primaryKey"`
-	Date    string `gorm:"primaryKey"`
-	Country string
-	Device  string
-	Browser string
+	Ip       string `gorm:"primaryKey"`
+	Path     string `gorm:"primaryKey"`
+	Action   string `gorm:"primaryKey"`
+	Date     string `gorm:"primaryKey"`
+	Country  string
+	Device   string
+	Browser  string
+	Referrer string
 }
 
 type Date struct {
@@ -148,14 +151,24 @@ func track(ctx echo.Context) error {
 
 	action := ctx.QueryParam("action")
 
+	rawReferrer := ctx.Request().Header.Get("Referer")
+	parsedUrl, err := url.Parse(rawReferrer)
+	if err != nil {
+		ctx.Logger().Error(err)
+		return ctx.NoContent(http.StatusOK)
+	}
+	rawReferrerDomain := parsedUrl.Hostname()
+	referrerDomain := strings.TrimPrefix(rawReferrerDomain, "www.")
+
 	hit := Hit{
-		Ip:      ipHashString,
-		Path:    path,
-		Action:  action,
-		Date:    today,
-		Country: countryName,
-		Device:  ua.OS,
-		Browser: ua.Name,
+		Ip:       ipHashString,
+		Path:     path,
+		Action:   action,
+		Date:     today,
+		Country:  countryName,
+		Device:   ua.OS,
+		Browser:  ua.Name,
+		Referrer: referrerDomain,
 	}
 	if result := db.Create(&hit); result.Error != nil && !errors.Is(result.Error, gorm.ErrDuplicatedKey) {
 		ctx.Logger().Error(result.Error)
@@ -187,14 +200,21 @@ func statsRoute(ctx echo.Context) error {
 
 	var views []stat
 	db.Raw("SELECT d.date AS name, COUNT(h.ip) AS count FROM dates AS d LEFT JOIN (SELECT * FROM hits WHERE path = ?) AS h ON h.date = d.date GROUP BY d.date HAVING d.date >= ?", path, monthBefore).Scan(&views)
+
 	var actions []stat
 	db.Raw("SELECT action AS name, COUNT(*) AS count FROM hits WHERE path = ? GROUP BY action HAVING date >= ?", path, monthBefore).Scan(&actions)
+
 	var countries []stat
 	db.Raw("SELECT country AS name, COUNT(*) AS count FROM hits WHERE path = ? AND date >= ? GROUP BY country", path, monthBefore).Scan(&countries)
+
 	var browsers []stat
 	db.Raw("SELECT browser AS name, COUNT(*) AS count FROM hits WHERE path = ? AND date >= ? GROUP BY browser", path, monthBefore).Scan(&browsers)
+
 	var devices []stat
 	db.Raw("SELECT device AS name, COUNT(*) AS count FROM hits WHERE path = ? AND date >= ? GROUP BY device", path, monthBefore).Scan(&devices)
 
-	return statsTempl(path, views, actions, countries, browsers, devices).Render(ctx.Request().Context(), ctx.Response().Writer)
+	var referrers []stat
+	db.Raw("SELECT referrer AS name, COUNT(*) AS count FROM hits WHERE path = ? AND date >= ? GROUP BY referrer", path, monthBefore).Scan(&referrers)
+
+	return statsTempl(path, views, actions, countries, browsers, devices, referrers).Render(ctx.Request().Context(), ctx.Response().Writer)
 }
