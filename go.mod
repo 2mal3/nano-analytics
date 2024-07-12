@@ -3,6 +3,7 @@ module github.com/2mal3/nano-anayltics
 go 1.21.8
 
 require (
+    github.com/a-h/templ v0.2.747
 	github.com/glebarez/sqlite v1.11.0
 	github.com/go-co-op/gocron/v2 v2.9.0
 	github.com/joho/godotenv v1.5.1
