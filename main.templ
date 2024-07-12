@@ -123,11 +123,14 @@ templ statsTempl(path string, views []stat, actions []stat, countries []stat, br
 						@barGraph(devices, "devices")
 					</article>
 				</div>
-				<article>
-					<h2>Referrers</h2>
-					<canvas id="referrers"></canvas>
-					@barGraph(referrers, "referrers")
-				</article>
+				<div class="grid">
+					<article>
+						<h2>Referrers</h2>
+						<canvas id="referrers"></canvas>
+						@barGraph(referrers, "referrers")
+					</article>
+					<div></div>
+				</div>
 			</main>
 			@footerTempl()
 		</body>
