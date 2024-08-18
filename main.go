@@ -151,7 +151,7 @@ func track(ctx echo.Context) error {
 
 	action := ctx.QueryParam("action")
 
-	rawReferrer := ctx.Request().Header.Get("Referer")
+	rawReferrer := ctx.QueryParam("referrer")
 	parsedUrl, err := url.Parse(rawReferrer)
 	if err != nil {
 		ctx.Logger().Error(err)
