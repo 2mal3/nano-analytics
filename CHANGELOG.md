@@ -1,13 +1,7 @@
 
-## 0.2.0 (2024.07.12)
-
-### Added
-
-- analysing of referrers
-- website titles for stats paths
-- meta descriptions for all pages
+## 0.2.1 (14.9.2024)
 
 ### Changed
 
-- improved stability of stats route
-- updated dependencies
+- referrer is set from query parameter instead of header to make it more flexible
+- version number is now show in the footer
