@@ -18,7 +18,7 @@ I highly recommend using Docker (image: `ghcr.io/2mal3/nano-analytics:latest`).
 
 ## Integration Into Your App
 
-Somehow call the URL `<server address>/track/<your application identifier>[?action=<a special action>]` from the client. Where the application identifier and the action can be any string of your choice.
+Somehow call the URL `http[s]://<server address>/track/<your application identifier>[?action=<a special action>&referrer=<the website referrer>]` from the client. Where the application identifier and the action can be any string of your choice.
 
 For example, a website could do this with the following css class:
 
