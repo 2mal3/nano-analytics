@@ -20,6 +20,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/mileusna/useragent"
 	"github.com/oschwald/geoip2-golang"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -41,7 +42,7 @@ type Date struct {
 
 var db *gorm.DB
 var geolite *geoip2.Reader
-var adminPassword string
+var adminPasswordHash string
 var adminUsername string
 
 func main() {
@@ -49,10 +50,9 @@ func main() {
 
 	// Load environment variables
 	godotenv.Load()
-	adminPassword = os.Getenv("ADMIN_PASSWORD")
-	if adminPassword == "" {
-		adminPassword = "admin"
-		fmt.Println("ADMIN_PASSWORD not set")
+	adminPasswordHash = os.Getenv("ADMIN_PASSWORD_HASH")
+	if adminPasswordHash == "" {
+		fmt.Println("ADMIN_PASSWORD_HASH not set")
 		os.Exit(1)
 	}
 	adminUsername = os.Getenv("ADMIN_USERNAME")
@@ -107,7 +107,7 @@ func main() {
 	statRoutes := e.Group("/stats")
 	statRoutes.Use(middleware.BasicAuth(func(username string, password string, c echo.Context) (bool, error) {
 		if subtle.ConstantTimeCompare([]byte(username), []byte(adminUsername)) == 1 &&
-			subtle.ConstantTimeCompare([]byte(password), []byte(adminPassword)) == 1 {
+			verifyPassword(password, adminPasswordHash) {
 			return true, nil
 		}
 		return false, nil
@@ -117,6 +117,11 @@ func main() {
 	statRoutes.GET("/:path", statsRoute)
 
 	e.Logger.Fatal(e.Start(":1323"))
+}
+
+func verifyPassword(password string, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
 
 // Creates the current date in the database each day for the data view to work properly

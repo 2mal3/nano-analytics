@@ -12,7 +12,7 @@ I highly recommend using Docker (image: `ghcr.io/2mal3/nano-analytics:latest`).
 ### Required Configuration
 
 - environment (env) variable: `ADMIN_USERNAME` (default `admin`)
-- env variable: `ADMIN_PASSWORD`
+- env variable: `ADMIN_PASSWORD_HASH` (bcrypt hash of the password, can be generated ith `mkpasswd -m bcrypt "<password>"`)
 - forward port `1323`
 - volume for `/app/database`
 
