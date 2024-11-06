@@ -1,3 +1,9 @@
+## 0.2.2 (6.11.2024)
+
+### Changed
+
+- BREAKING: use bycrpt hash for storing the password
+- sort bars in bar chats by their size (#7)
 
 ## 0.2.1 (14.9.2024)
 
