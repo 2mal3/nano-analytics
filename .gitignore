@@ -1,5 +1,6 @@
-# editor files
+# user generated
 .vscode/
+.direnv/
 
 # secret files
 .env
