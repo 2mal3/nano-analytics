@@ -182,6 +182,7 @@ func track(ctx echo.Context) error {
 		return ctx.NoContent(http.StatusOK)
 	}
 
+	ctx.Response().Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
 	return ctx.NoContent(http.StatusOK)
 }
 
