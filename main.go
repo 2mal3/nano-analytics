@@ -106,6 +106,7 @@ func main() {
 	e.GET("/track/:path", track)
 
 	// Special password protected routes
+	e.GET("", func(ctx echo.Context) error { return ctx.Redirect(http.StatusSeeOther, "/stats") })
 	statRoutes := e.Group("/stats")
 	statRoutes.Use(middleware.BasicAuth(func(username string, password string, c echo.Context) (bool, error) {
 		if subtle.ConstantTimeCompare([]byte(username), []byte(adminUsername)) == 1 &&
