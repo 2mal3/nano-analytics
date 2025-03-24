@@ -1,9 +1,5 @@
-## 0.2.4
-
-### Changed
-
-- BREAKING: root url path now points to stats route instead of nothing for easier stat access
+## 0.2.5
 
 ### Fixed
 
-- track route could be cached by the client browser, leading to missing data
+- problems with file permissions for the database on some systems
